@@ -1,0 +1,28 @@
+{
+	"name": "pdftxt",
+	"version": "0.0.1",
+	"description": "extract text from pdf documents",
+	"licenses": [{
+		"type": "Public Domain",
+		"url": "http://unlicense.org/UNLICENSE"
+	}],
+	"author": "Sebastian Vollnhals <sebastian@vollnhals.info> (http://vollnhals.info/)",
+	"maintainers": [{
+		"name": "Sebastian Vollnhals",
+		"email": "sebastian@vollnhals.info",
+		"web": "http://vollnhals.info/"
+	}],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/yetzt/node-pdftxt.git"
+	},
+	"main": "./pdftxt.js",
+	"keywords": ["pdf","text","extract","pdftotext","pdf2text","pdf-text","txt","pdftxt","pdf2txt","<3"],
+	"dependencies": {
+		"ent": ">= 0.1.0",
+		"comandante": ">= 0.0.1"
+	},
+	"engines": {
+		"node": ">= 0.8.15"
+	}
+}
