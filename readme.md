@@ -9,7 +9,7 @@ pdftxt requires an unixoid operating system with [pdf2json](https://code.google.
 # Install
 
 ````
-npm install pdftxt
+npm install git://github.com/yetzt/node-pdftxt.git
 ````
 
 # Usage
