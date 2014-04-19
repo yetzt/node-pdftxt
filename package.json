@@ -4,16 +4,16 @@
 	"description": "extract text from pdf documents",
 	"licenses": [
 		{
-		"type": "Public Domain",
-		"url": "http://unlicense.org/UNLICENSE"
+			"type": "Public Domain",
+			"url": "http://unlicense.org/UNLICENSE"
 		}
 	],
 	"author": "Sebastian Vollnhals <sebastian@vollnhals.info> (http://vollnhals.info/)",
 	"maintainers": [
 		{
-		"name": "Sebastian Vollnhals",
-		"email": "sebastian@vollnhals.info",
-		"web": "http://vollnhals.info/"
+			"name": "Sebastian Vollnhals",
+			"email": "sebastian@vollnhals.info",
+			"web": "http://vollnhals.info/"
 		}
 	],
 	"repository": {
