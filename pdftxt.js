@@ -55,10 +55,10 @@ var init = function(callback){
 };
 
 var extract = function(data, callback) {
-	
+		
 	var _pages = [];
 	data.forEach(function(page){
-		
+	
 		/* concatenate fragments by line */
 		var _lines = [];
 		var _llw = 0;
@@ -130,7 +130,12 @@ var extract = function(data, callback) {
 			_data.push(_set);
 		});
 
-		_pages.push(_data);
+		_pages.push({
+			num: page.number,
+			width: page.width,
+			height: page.height,
+			blocks: _data
+		});
 		
 	});
 	

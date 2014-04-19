@@ -1,6 +1,6 @@
 {
 	"name": "pdftxt",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "extract text from pdf documents",
 	"licenses": [{
 		"type": "Public Domain",
