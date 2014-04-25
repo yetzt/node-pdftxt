@@ -158,7 +158,10 @@ module.exports = function(file, callback) {
 		var _buf = [];
 		var _proc = comandante(bin, ["-q", "-enc", "UTF-8", file, "/dev/stdout"]);
 	
+		var _error = false;
+	
 		_proc.on('error', function(e){
+			_error = true;
 			callback(e);
 		});
 
@@ -168,10 +171,12 @@ module.exports = function(file, callback) {
 	
 		_proc.stdout.on('end', function(){
 
+			if (_error) return;
+
 			try {
 				var _data = JSON.parse(Buffer.concat(_buf).toString());
 			} catch(e) {
-				callback(e);
+				return callback(e);
 			}
 			
 			extract(_data, function(err, data){
