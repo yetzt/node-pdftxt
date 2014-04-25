@@ -4,7 +4,7 @@ pdftxt extracts text from PDF documents, hence the name. this software was built
 
 ## Requirements
 
-pdftxt requires an unixoid operating system with [pdf2json](https://code.google.com/p/pdf2json/) installed.
+pdftxt requires an unixoid operating system with [pdf3json](https://github.com/yetzt/pdf3json/) installed.
 
 ## Install
 

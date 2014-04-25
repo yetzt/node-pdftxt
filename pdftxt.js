@@ -15,22 +15,24 @@ var init = function(callback){
 	if (_bin !== null) return callback(null, _bin)
 
 	/* check for stdout blockdev */
+	/*
 	if (!fs.existsSync("/dev/stdout")) {
 		return callback(new Error("there is no /dev/stdout. this lib requires unix or better."));
 	};
+	*/
 
 	/* find pdf2json binary in path */
 	if (!'PATH' in process.env) return callback(new Error("can't find the $PATH"));
 	var _path = process.env.PATH.split(/:/g);
 	var _tmp_bin = null;
 	for (var i = 0; i < _path.length; i++) {	
-		_tmp_bin = path.resolve(_path[i], 'pdf2json');
+		_tmp_bin = path.resolve(_path[i], 'pdf3json');
 		if (fs.existsSync(_tmp_bin)) {
 			_bin = _tmp_bin;
 			break;
 		}
 	};
-	if (!_bin) return callback(new Error('`pdf2json` binary not found'));
+	if (!_bin) return callback(new Error('`pdf3json` binary not found'));
 
 	/* check if the binary we found is the one we are looking for, since there is an executable node module of the same name */
 	var _proc = comandante(_bin, ['-v']);
@@ -43,14 +45,14 @@ var init = function(callback){
 	_proc.stderr.on('end', function(){
 		
 		/* check if the output matches the desired binary */
-		if (Buffer.concat(_buf).toString().match(/pdf2json version [0-9\.]+ http:\/\/flexpaper\.devaldi\.com\/pdf2json\/, based on Xpdf version [0-9\.]+/)){
+		if (Buffer.concat(_buf).toString().match(/pdf3json version [0-9\.]+, based on pdf2json [0-9\.]+ and Xpdf version [0-9\.]+/)){
 			callback(null, _bin);
 		} else {
-			callback(new Error('wrong `pdf2json` binary. please use this one: https://code.google.com/p/pdf2json/'));
+			callback(new Error('wrong `pdf3json` binary. please use this one: https://github.com/yetzt/pdf3json/'));
 		}
 	});
 		
-	_proc.on('error', function(e){}); // ignore errors, since the pdf2json binary exits 1 on -v
+	_proc.on('error', function(e){}); // ignore errors, since the pdf3json binary exits 1 on -v
 
 };
 
@@ -156,7 +158,7 @@ module.exports = function(file, callback) {
 	
 		/* spawn pdf2json */
 		var _buf = [];
-		var _proc = comandante(bin, ["-q", "-enc", "UTF-8", file, "/dev/stdout"]);
+		var _proc = comandante(bin, ["-q", "-e", "UTF-8", file]);
 	
 		var _error = false;
 	
