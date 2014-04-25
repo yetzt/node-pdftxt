@@ -104,13 +104,22 @@ var extract = function(data, callback) {
 		if (_block.length > 0) _blocks.push(_block);
 
 		/* trim, decode entities and and dehyphenate */
-		_blocks.forEach(function(_block){
+		_blocks.forEach(function(_block, _blkidx){
 			_block.forEach(function(_text, _idx){
 				_text.data = ent.decode(_text.data.replace(/^^s+|\s+$/,'').replace(/\s\s+/g,' '));
-				if (_idx > 0 && _block[_idx-1].data.match(/[a-z\u00df-\u00f6\u00f8-\u00ff]-$/) && _text.data.match(/^[a-z\u00df-\u00f6\u00f8-\u00ff]/)) { // fixme: make unicode lowercase regex
+				if (_idx > 0 && _block[_idx-1] && _block[_idx-1].data.match(/[a-z\u00df-\u00f6\u00f8-\u00ff]-$/) && _text.data.match(/^[a-z\u00df-\u00f6\u00f8-\u00ff]/)) { // fixme: make unicode lowercase regex
 					var _split = _text.data.match(/^([a-z\u00df-\u00f6\u00f8-\u00ff]+[^\s]*)\s(.*)$/);
-					_block[_idx-1].data = _block[_idx-1].data.replace(/\-$/, _split[1]);
-					_text.data = _split[2];
+					if (_split) {
+						_block[_idx-1].data = _block[_idx-1].data.replace(/\-$/, _split[1]);
+						_text.data = _split[2];
+					} else {
+						/* check for special case: hyphenation before line end */
+						var _split_end = _text.data.match(/^([a-z\u00df-\u00f6\u00f8-\u00ff]+[^\s]*)$/);
+						if (_split_end) {
+							_block[_idx-1].data = _block[_idx-1].data.replace(/\-$/, _split_end[1]);
+							delete _block[_idx];
+						}
+					}
 				}
 			});
 		});
