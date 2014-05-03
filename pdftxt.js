@@ -100,7 +100,7 @@ var extract = function(data, callback) {
 			if (_newblock) _block = [];
 			_last = _current;
 		});
-		if (!_last.data.match(/^\s*$/)) _block.push(_last)
+		if (_last && _last.hasOwnProperty("data") && !_last.data.match(/^\s*$/)) _block.push(_last)
 		if (_block.length > 0) _blocks.push(_block);
 
 		/* trim, decode entities and and dehyphenate */
