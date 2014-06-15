@@ -3,7 +3,7 @@
 /* get node modules */
 var fs = require("fs");
 var path = require("path");
-var ent = require("ent");
+var he = require("he");
 
 /* get npm modules */
 var comandante = require("comandante");
@@ -25,7 +25,7 @@ var init = function(callback){
 	if (!'PATH' in process.env) return callback(new Error("can't find the $PATH"));
 	var _path = process.env.PATH.split(/:/g);
 	var _tmp_bin = null;
-	for (var i = 0; i < _path.length; i++) {	
+	for (var i = 0; i < _path.length; i++) {
 		_tmp_bin = path.resolve(_path[i], 'pdf3json');
 		if (fs.existsSync(_tmp_bin)) {
 			_bin = _tmp_bin;
@@ -43,7 +43,7 @@ var init = function(callback){
 	});
 
 	_proc.stderr.on('end', function(){
-		
+
 		/* check if the output matches the desired binary */
 		if (Buffer.concat(_buf).toString().match(/pdf3json version [0-9\.]+, based on pdf2json [0-9\.]+ and Xpdf version [0-9\.]+/)){
 			callback(null, _bin);
@@ -51,22 +51,22 @@ var init = function(callback){
 			callback(new Error('wrong `pdf3json` binary. please use this one: https://github.com/yetzt/pdf3json/'));
 		}
 	});
-		
+
 	_proc.on('error', function(e){}); // ignore errors, since the pdf3json binary exits 1 on -v
 
 };
 
 var extract = function(data, callback) {
-		
+
 	var _pages = [];
 	data.forEach(function(page){
-	
+
 		/* concatenate fragments by line */
 		var _lines = [];
 		var _llw = 0;
 		var _last = page.text.shift();
 		page.text.forEach(function(_current){
-			
+
 			if (_current.top === _last.top) {
 				var _space = Math.abs((_last.left+_last.width) - _current.left);
 				/* same line */
@@ -85,10 +85,10 @@ var extract = function(data, callback) {
 				_lines.push(_last);
 				_last = _current;
 			}
-			
+
 		});
 		_lines.push(_last);
-		
+
 		/* split into blocks */
 		var _blocks = [];
 		var _block = [];
@@ -106,7 +106,7 @@ var extract = function(data, callback) {
 		/* trim, decode entities and and dehyphenate */
 		_blocks.forEach(function(_block, _blkidx){
 			_block.forEach(function(_text, _idx){
-				_text.data = ent.decode(_text.data.replace(/^^s+|\s+$/,'').replace(/\s\s+/g,' '));
+				_text.data = he.decode(_text.data.replace(/^^s+|\s+$/,'').replace(/\s\s+/g,' '));
 				if (_idx > 0 && _block[_idx-1] && _block[_idx-1].data.match(/[a-z\u00df-\u00f6\u00f8-\u00ff]-$/) && _text.data.match(/^[a-z\u00df-\u00f6\u00f8-\u00ff]/)) { // fixme: make unicode lowercase regex
 					var _split = _text.data.match(/^([a-z\u00df-\u00f6\u00f8-\u00ff]+[^\s]*)\s(.*)$/);
 					if (_split) {
@@ -147,30 +147,30 @@ var extract = function(data, callback) {
 			height: page.height,
 			blocks: _data
 		});
-		
+
 	});
-	
+
 	callback(null, _pages);
-	
+
 }
 
 module.exports = function(file, callback) {
 
 	init(function(err, bin){
-		
+
 		if (err) return callback(err);
-	
+
 		/* check if file exists, to save some embarrassment. */
 		if (!fs.existsSync(file)) {
 			return callback(new Error("file not found"));
 		};
-	
+
 		/* spawn pdf2json */
 		var _buf = [];
 		var _proc = comandante(bin, ["-q", "-e", "UTF-8", file]);
-	
+
 		var _error = false;
-	
+
 		_proc.on('error', function(e){
 			_error = true;
 			callback(e);
@@ -179,7 +179,7 @@ module.exports = function(file, callback) {
 		_proc.stdout.on('data', function(d){
 			_buf.push(d);
 		});
-	
+
 		_proc.stdout.on('end', function(){
 
 			if (_error) return;
@@ -189,18 +189,18 @@ module.exports = function(file, callback) {
 			} catch(e) {
 				return callback(e);
 			}
-			
+
 			extract(_data, function(err, data){
-				
+
 				if (err) return callback(err);
-				
+
 				callback(null, data);
-				
+
 			});
-		
+
 		});
-	
+
 	});
-	
+
 }
 
