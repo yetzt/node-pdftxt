@@ -106,7 +106,7 @@ var extract = function(data, callback) {
 		/* trim, decode entities and and dehyphenate */
 		_blocks.forEach(function(_block, _blkidx){
 			_block.forEach(function(_text, _idx){
-				_text.data = he.decode(_text.data.replace(/^^s+|\s+$/,'').replace(/\s\s+/g,' '));
+				_text.data = he.decode(_text.data.replace(/^\s+|\s+$/,'').replace(/\s\s+/g,' '));
 				if (_idx > 0 && _block[_idx-1] && _block[_idx-1].data.match(/[a-z\u00df-\u00f6\u00f8-\u00ff]-$/) && _text.data.match(/^[a-z\u00df-\u00f6\u00f8-\u00ff]/)) { // fixme: make unicode lowercase regex
 					var _split = _text.data.match(/^([a-z\u00df-\u00f6\u00f8-\u00ff]+[^\s]*)\s(.*)$/);
 					if (_split) {
