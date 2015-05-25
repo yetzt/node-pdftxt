@@ -28,13 +28,13 @@ pdftext("file.pdf", function(err, data) {
 
 ## Data
 
-__Warning:__ This has changed since the last version.
+__Warning:__ This has changed again since the last version.
 
 The data object is quite simple. It's an array with one item per page. 
 
 Every page item has it's `number`, `width` and `height` as properties. The proprty `blocks` contains an array of text block objects.
 
-Every block object contains a `bbox` bounding box array with its `left`, `top`, `right` and `bottom` positions on the page, and an array of `lines` within that block.
+Every block object contains a `bbox` bounding box array with its `left`, `bottom`, `width` and `height` positions on the page, and an array of `lines` within that block.
 
 All `lines` are trimmed and made of pure unicode with decoded entities.
 
@@ -45,7 +45,7 @@ All `lines` are trimmed and made of pure unicode with decoded entities.
 		"width": width,
 		"height": height,
 		"blocks": [{
-			"bbox": [left, top, right, bottom],
+			"bbox": [left, bottom, width, height],
 			"lines": [
 				"text",
 				"text"

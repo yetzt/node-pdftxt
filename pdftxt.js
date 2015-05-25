@@ -127,17 +127,39 @@ var extract = function(data, callback) {
 		/* flatten blocks */
 		var _data = [];
 		_blocks.forEach(function(_block){
+
+			var _bboxes = [];
+
 			var _set = {
-				"bbox": [_block[0].left, _block[0].top, _block[0].left, _block[0].top],
+				"bbox": [null,null,null,null],
 				"lines": []
 			};
+
 			_block.forEach(function(_line){
-				if (_line.left < _set.bbox[0]) _set.bbox[0] = _line.left;
-				if ((_line.left+_line.width) > _set.bbox[2]) _set.bbox[2] = (_line.left+_line.width);
-				if (_line.top < _set.bbox[1]) _set.bbox[1] = _line.top;
-				if ((_line.top+_line.height) > _set.bbox[3]) _set.bbox[3] = (_line.top+_line.height);
+
 				_set.lines.push(_line.data);
+
+				// convert to absolute measures starting at the bottom
+				_bboxes.push([
+					_line.left, // start left
+					(page.height-_line.top),  // start bottom
+					(_line.left+_line.width),// end left
+					((page.height-_line.top)+_line.height) // end bottom
+				]);
+								
 			});
+			
+			// find biggest bbox expansion
+			_bboxes.forEach(function(_bbox){
+				if (_set.bbox[0] === null || _bbox[0] < _set.bbox[0]) _set.bbox[0] = _bbox[0];
+				if (_set.bbox[1] === null || _bbox[1] < _set.bbox[1]) _set.bbox[1] = _bbox[1];
+				if (_set.bbox[2] === null || _bbox[2] > _set.bbox[2]) _set.bbox[2] = _bbox[2];
+				if (_set.bbox[3] === null || _bbox[3] > _set.bbox[3]) _set.bbox[3] = _bbox[3];
+			});
+			// convert back to width/height
+			_set.bbox[2] = (_set.bbox[2]-_set.bbox[0]);
+			_set.bbox[3] = (_set.bbox[3]-_set.bbox[1]);	
+			
 			_data.push(_set);
 		});
 
